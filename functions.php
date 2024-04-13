@@ -36,4 +36,16 @@
     //     return $price_str;
     // }
 
+    function getLotTimeLeft()
+    {
+        date_default_timezone_set('Europe/Moscow');
+        $tcNow = time();
+        $tcEnd = strtotime('tomorrow');
+        $secLeft = $tcEnd - $tcNow;
+
+        $hours = floor($secLeft / 3600);
+        $minutes = floor(($secLeft % 3600) / 60);
+
+        return $hours.":".$minutes;
+    }
 ?>

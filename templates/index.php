@@ -42,6 +42,7 @@
                             <span class="lot__cost"><?= formatPrice($value["price"]) ?></span>
                         </div>
                         <div class="lot__timer timer">
+                            <?= getLotTimeLeft(); ?>
                         </div>
                     </div>
                 </div>
