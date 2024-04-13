@@ -8,9 +8,10 @@
         foreach( $args as $key => $value ){
             ${$key} = $value;
         }
+        //extract($args);
 
         ob_start(); //включили буферизациюю вывода print
-        print( require_once($templateFile) );
+        $content = require($templateFile);
         $content = ob_get_clean(); //записали содержимое файла
 
         return $content;
