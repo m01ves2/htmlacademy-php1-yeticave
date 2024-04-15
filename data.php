@@ -9,44 +9,50 @@ $bets = [
 
 $lots = [
     [
-        "title" => "2014 Rossigol District Snowboard",
-        "cathegory" => "Доски и лыжи",
+        "name" => "2014 Rossigol District Snowboard",
+        "category" => "Доски и лыжи",
         "price" => 10999,
-        "url" => "img/lot-1.jpg",
+        "img" => "img/lot-1.jpg",
+        'enddate' => '2024-04-16'
     ],
     [
-        "title" => "DC Ply 2016/2017 Snowboard",
-        "cathegory" => "Доски и лыжи",
+        "name" => "DC Ply 2016/2017 Snowboard",
+        "category" => "Доски и лыжи",
         "price" => 159999,
-        "url" => "img/lot-2.jpg",
+        "img" => "img/lot-2.jpg",
+        'enddate' => '2024-04-20'
     ],
     [
-        "title" => "Крепления Union Contact Pro 2015 года, размер L/XL",
-        "cathegory" => "Крепления",
+        "name" => "Крепления Union Contact Pro 2015 года, размер L/XL",
+        "category" => "Крепления",
         "price" => 8000,
-        "url" => "img/lot-3.jpg",
+        "img" => "img/lot-3.jpg",
+        'enddate' => '2024-04-17'
     ],
     [
-        "title" => "Ботинки для сноуборда",
-        "cathegory" => "Ботинки",
+        "name" => "Ботинки для сноуборда",
+        "category" => "Ботинки",
         "price" => 10999,
-        "url" => "img/lot-4.jpg",
+        "img" => "img/lot-4.jpg",
+        'enddate' => '2024-04-27'
     ],
     [
-        "title" => "Куртка для сноуборда",
-        "cathegory" => "Одежда",
+        "name" => "Куртка для сноуборда",
+        "category" => "Одежда",
         "price" => 7500,
-        "url" => "img/lot-5.jpg",
+        "img" => "img/lot-5.jpg",
+        'enddate' => '2024-05-05'
     ],
     [
-        "title" => "Маска Oakley Canopy",
-        "cathegory" => "Разное",
+        "name" => "Маска Oakley Canopy",
+        "category" => "Разное",
         "price" => 5400,
-        "url" => "img/lot-6.jpg",
+        "img" => "img/lot-6.jpg",
+        'enddate' => '2024-01-10'
     ],
 ];
 
-$cathegories = ["Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"];
+$categories = ["Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"];
 $title = 'Главная';
 $user_name = 'Константин';
 $user_avatar = 'img/user.jpg';
