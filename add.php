@@ -2,7 +2,7 @@
     require_once './functions.php';
     require_once './data.php';
 
-    if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $lot = $_POST;
 
@@ -17,65 +17,62 @@
         ];
         $errors = [];
 
-        foreach( $required_fields as $field ){
-            if( empty( $lot[$field]) ){
+        foreach ($required_fields as $field) {
+            if (empty($lot[$field])) {
                 $errors[$field] = $err_desc[$field] ?? 'Это поле нужно заполнить';
             }
         }
 
-        if( $lot['category'] == 'Выберите категорию' ){
-            $errors['category'] = 'Выберите категорию';
+        if ($lot['category'] == 'Выберите категорию') {
+            $errors['category'] = $err_desc['category'];
         }
 
-        if(isset($_FILES['photo2']['name'])){ //если есть файл с input.name='photo2'...
+        //TODO
+        if(!empty($_FILES['lot-img']['tmp_name'])){
+            $tmp_name = $_FILES['lot-img']['tmp_name'];
+            $path = 'uploads/'.$_FILES['lot-img']['name'];
 
-            $tmp_name = $_FILES['photo2']['tmp_name'];
-            $path = $_FILES['photo2']['name'];
-
-            // $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            // $file_type = finfo_file($finfo, $tmp_name);
-
-            // if($file_type !== 'image/jpeg'){
-            //     $errors['Файл'] = 'Загрузите картинку в формате jpg';
-            // }
-            // else
-            {
-                move_uploaded_file($tmp_name, './uploads/'.$path);
-                $lot['img'] = './uploads/'.$path;
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $file_type = finfo_file($finfo, $tmp_name);
+            if($file_type !== 'image/jpeg'){
+                $errors['file-upload'] = 'Загрузите картинку в формате jpeg';
+            }
+            else{
+                move_uploaded_file($tmp_name, $path);
+                $lot['img'] = $path;
             }
         }
-        else{
-            $errors['Файл'] = 'Вы не загрузили файл';
-        }
 
-
-        if( count($errors) ){
+        if (count($errors)) {
             $page_content = renderTemplate('./templates/add-lot.php', ['lot' => $lot, 'errors' => $errors]);
         }
-        else{
-            $id = count($lots);
-            $lots[$id] = [
+        else {
+            $newLot = [
                 "name" => $lot['lot-name'],
                 "category" => $lot['category'],
                 "price" => $lot['lot-rate'],
-                "img" => $lot['img'],
                 'enddate' => $lot['lot-date'],
                 'description' => $lot['message'],
             ];
-            $page_content = renderTemplate('./templates/lot.php', ['lot' => $lots[$id]]);
+            $newLot['img'] = isset($lot['img']) ?  $lot['img'] : '';
+
+            $page_content = renderTemplate('./templates/lot.php', ['lot' => $newLot]);
         }
     }
-    else{ //$_SERVER['REQUEST_METHOD'] == 'GET'
+    else { //$_SERVER['REQUEST_METHOD'] == 'GET'
         $page_content = renderTemplate('./templates/add-lot.php', []);
     }
 
-    $layout_content = renderTemplate('./templates/layout.php',
-    [
-        'categories' => $categories,
-        'title' => $title,
-        'content' => $page_content,
-        'user_name' => $user_name,
-        'user_avatar' => $user_avatar
-    ]);
+    $layout_content = renderTemplate(
+        './templates/layout.php',
+        [
+            'categories' => $categories,
+            'title' => $title,
+            'content' => $page_content,
+            'user_name' => $user_name,
+            'user_avatar' => $user_avatar
+        ]
+    );
     print($layout_content);
+
 ?>

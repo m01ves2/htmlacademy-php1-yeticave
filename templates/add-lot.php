@@ -52,16 +52,19 @@
     ?>
     <div class="form__item form__item--wide <?= $error_classname ?>">
         <label for="message">Описание</label>
-        <textarea id="message" name="message" placeholder="Напишите описание лота" required><?= $lotName ?></textarea>
+        <textarea id="message" name="message" placeholder="Напишите описание лота" required><?= $message ?></textarea>
         <!-- <span class="form__error">Напишите описание лота</span> -->
         <?php
-            if(isset($errors['category'])){
+            if(isset($errors['message'])){
                 echo('<span class="form__error">'.$errors['message'].'</span>');
             }
         ?>
     </div>
 
-    <div class="form__item form__item--file"> <!-- form__item--uploaded -->
+    <?php
+        $error_classname = isset($errors['file-upload']) ? 'form__item--invalid' : '';
+    ?>
+    <div class="form__item form__item--file <?= $error_classname ?>"> <!-- form__item--uploaded -->
         <label>Изображение</label>
         <div class="preview">
             <button class="preview__remove" type="button">x</button>
@@ -70,11 +73,16 @@
             </div>
         </div>
         <div class="form__input-file">
-            <input class="visually-hidden" type="file" id="photo2" name="photo2" value="">
-            <label for="photo2">
+            <input class="visually-hidden" type="file" id="lot-img" name="lot-img" value="">
+            <label for="lot-img">
                 <span>+ Добавить</span>
             </label>
         </div>
+        <?php
+            if(isset($errors['file-upload'])){
+                echo('<span class="form__error">'.$errors['file-upload'].'</span>');
+            }
+        ?>
     </div>
 
     <div class="form__container-three">
@@ -100,7 +108,7 @@
             <input id="lot-step" type="number" name="lot-step" placeholder="0" value="<?= $lotStep ?>" required>
             <!-- <span class="form__error">Введите шаг ставки</span> -->
             <?php
-                if(isset($errors['lot-rate'])){
+                if(isset($errors['lot-step'])){
                     echo('<span class="form__error">'.$errors['lot-step'].'</span>');
                 }
             ?>
