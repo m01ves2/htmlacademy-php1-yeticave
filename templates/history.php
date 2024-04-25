@@ -3,9 +3,11 @@
     <section class="lots">
         <h2>История просмотров</h2>
         <ul class="lots__list">
-            <?php foreach($lots as $lot)
-               print(renderTemplate('./templates/lot-preview.php', [ 'lot' => $lot ] ));
-            ?>
+            <?php foreach($lots as $id => $lot): ?>
+                <li class="lots__item lot">
+                    <?= renderTemplate('./templates/lot-preview.php', [ 'id' => $id, 'lot' => $lot ] ); ?>
+                </li>
+            <?php endforeach;  ?>
         </ul>
     </section>
     <ul class="pagination-list">

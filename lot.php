@@ -14,15 +14,20 @@ else {
 
     //TODO
     //добавляем просмотренный лот в историю просмотров в cookie
-    // $h_ids = [];
-    // if(isset($_COOKIE['history'])){
-    //     $h_ids = json_decode($_COOKIE['history']);
-    // }
+    $h_ids = [];
+    if(isset($_COOKIE['history'])){
+        $h_ids = json_decode($_COOKIE['history']);
+    }
 
-    // if( !in_array($id, $h_ids) ) {
-    //     $h_ids[] = $id; //добавляем новый $id, если его ещё не было
-    // }
-    // $_COOKIE['history'] = json_encode($h_ids);
+    if( !in_array($id, $h_ids) ) {
+        $h_ids[] = $id; //добавляем новый $id, если его ещё не было
+    }
+    //$_COOKIE['history'] = json_encode($h_ids);
+    $name = 'history';
+    $value = json_encode($h_ids);
+    $expire = time() + 7 * 24 * 60 * 60;
+    $path = '/';
+    setcookie($name, $value, $expire, $path );
 }
 
 $layout_content = renderTemplate(

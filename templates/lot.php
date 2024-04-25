@@ -44,6 +44,8 @@
                         </p>
                         <button type="submit" class="button">Сделать ставку</button>
                     </form>
+                <?php else:?>
+                    <span class="user-menu__item"><a href="login.php">Войдите в личный кабинет, чтобы участвовать в аукционе</a></span>
                 <?php endif;?>
             </div>
             <div class="history">

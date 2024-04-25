@@ -1,18 +1,7 @@
 <?php
 require_once './functions.php';
 require_once './data.php';
-
-//TODO!!!!!!!
-session_start();
-$is_auth = false;
-$user_name = '';
-$user_avatar = '';
-
-if(isAuthorized()){
-    $is_auth = true;
-    $user_name = $_SESSION['user']['name'];
-    $user_avatar = $_SESSION['user']['avatar'];
-}
+require_once './auth.php';
 
 $history_lots = [];
 
@@ -25,7 +14,7 @@ if(isset($_COOKIE['history'])){
     }
 }
 
-$page_content = renderTemplate('./templates/all-lots.php', ['lots' => $history_lots]);
+$page_content = renderTemplate('./templates/history.php', ['lots' => $history_lots]);
 
 $layout_content = renderTemplate(
     './templates/layout.php',
