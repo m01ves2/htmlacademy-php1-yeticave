@@ -195,14 +195,24 @@ h2 {
   flex-wrap: wrap;
   width: 150px;
   margin: 0;
-  margin-top: 10px;
+  /* margin-top: 10px; */
   padding: 0;
   list-style: none;
+}
+
+.user-menu__item {
+  max-width: 200px;
+  display: flex;
+}
+
+.user-menu__item div{
+  align-self: center;
 }
 
 .user-menu__item a {
   color: #879296;
   font-weight: 700;
+  align-self: center;
 }
 
 .user-menu__item a:hover {
@@ -219,6 +229,7 @@ h2 {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  margin-left: auto;
 }
 
 .user-menu__image {
@@ -354,9 +365,9 @@ h2 {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-justify-content: space-between;
+  -webkit-justify-content: space-around;
   -ms-flex-pack: justify;
-  justify-content: space-between;
+  justify-content: space-around;
   -webkit-flex-wrap: wrap;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;

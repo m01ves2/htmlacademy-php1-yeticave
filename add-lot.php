@@ -1,6 +1,12 @@
 <?php
     require_once './functions.php';
     require_once './data.php';
+    require_once './auth.php';
+
+    if(!isAuthorized()){
+        header('HTTP/1.0 403 Forbidden');
+        exit();
+    }
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -18,7 +24,7 @@
         $errors = [];
 
         foreach ($required_fields as $field) {
-            if (empty($lot[$field])) {
+            if ( empty( $lot[$field] ) ) {
                 $errors[$field] = $err_desc[$field] ?? 'Это поле нужно заполнить';
             }
         }
@@ -27,13 +33,14 @@
             $errors['category'] = $err_desc['category'];
         }
 
-        //TODO
-        if(!empty($_FILES['lot-img']['tmp_name'])){
+        if( !empty( $_FILES['lot-img']['tmp_name'] ) ){
+
             $tmp_name = $_FILES['lot-img']['tmp_name'];
             $path = 'uploads/'.$_FILES['lot-img']['name'];
 
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $file_type = finfo_file($finfo, $tmp_name);
+
             if($file_type !== 'image/jpeg'){
                 $errors['file-upload'] = 'Загрузите картинку в формате jpeg';
             }
@@ -52,23 +59,29 @@
                 "category" => $lot['category'],
                 "price" => $lot['lot-rate'],
                 'enddate' => $lot['lot-date'],
+                'step' =>  $lot['lot-step'],
                 'description' => $lot['message'],
             ];
             $newLot['img'] = isset($lot['img']) ?  $lot['img'] : '';
 
-            $page_content = renderTemplate('./templates/lot.php', ['lot' => $newLot]);
+            $lots[] = $newLot;
+
+            //$page_content = renderTemplate('./templates/lot.php', ['lot' => $newLot]);
+            $id = array_search($newLot, $lots);
+
+            $page_content = renderTemplate('./templates/lot.php', ['id' => $id, 'lot' => $lots[$id], 'bets' => $bets, 'is_auth' => $is_auth]);
         }
     }
     else { //$_SERVER['REQUEST_METHOD'] == 'GET'
         $page_content = renderTemplate('./templates/add-lot.php', []);
     }
 
-    $layout_content = renderTemplate(
-        './templates/layout.php',
+    $layout_content = renderTemplate('./templates/layout.php',
         [
             'categories' => $categories,
             'title' => $title,
             'content' => $page_content,
+            'is_auth' => $is_auth,
             'user_name' => $user_name,
             'user_avatar' => $user_avatar
         ]

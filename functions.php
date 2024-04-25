@@ -2,6 +2,7 @@
     function renderTemplate($templateFile, $args){
         $content = '';
         if(!file_exists($templateFile)){
+            print_r('TEMPLATE FILE NOT FOUND');
             return $content;
         }
 
@@ -47,5 +48,20 @@
         $minutes = floor(($secLeft % 3600) / 60);
 
         return [$hours, $minutes];
+    }
+
+    function searchUserByEmail($email, $users){
+        $result = null;
+        foreach($users as $user){
+            if($user['email'] == $email){
+                $result = $user;
+                break;
+            }
+        }
+        return $result;
+    }
+
+    function isAuthorized(){
+        return isset($_SESSION['user']);
     }
 ?>

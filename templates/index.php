@@ -28,9 +28,9 @@
     </div>
 
     <ul class="lots__list">
-        <?php foreach ($lots as $index => $lot) { ?>
+        <?php foreach ($lots as $id => $lot) { ?>
             <li class="lots__item lot">
-                <?= renderTemplate('./templates/lot-preview.php', ['id' => $index, 'lot' => $lot]); ?>
+                <?= renderTemplate('./templates/lot-preview.php', ['id' => $id, 'lot' => $lot]); ?>
             </li>
         <?php } ?>
     </ul>

@@ -1,17 +1,18 @@
 <?php
     require_once './functions.php';
     require_once './data.php';
+    require_once './auth.php';
+
 
     $page_content = renderTemplate('./templates/index.php', ['lots' => $lots]);
-
     $layout_content = renderTemplate('./templates/layout.php',
         [
             'categories' => $categories,
             'title' => $title,
             'content' => $page_content,
+            'is_auth' => $is_auth,
             'user_name' => $user_name,
             'user_avatar' => $user_avatar
         ]);
-
     print($layout_content);
 ?>
