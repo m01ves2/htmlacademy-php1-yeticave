@@ -572,7 +572,13 @@ h2 {
   margin: 0;
   padding: 0;
   list-style: none;
+  /* gap: 20px; */
 }
+
+/* .lots__list::after {
+  content: "";
+  flex: auto;
+} */
 
 .lots__item {
   width: 350px;
