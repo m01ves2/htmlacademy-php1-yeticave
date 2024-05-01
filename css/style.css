@@ -836,7 +836,7 @@ h2 {
 }
 
 .form__error {
-  display: none;
+  /* display: none; */
   font-size: 11px;
   color: #f84646;
 }
@@ -876,6 +876,10 @@ input:invalid .form__error{
 
 .form__item--wide.form__item--invalid textarea {
   background: #ffffff url("../img/error.svg") 702px 11px no-repeat;
+}
+
+.form__input-file {
+  position: relative;;
 }
 
 .form__item--file label span {
