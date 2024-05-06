@@ -4,6 +4,8 @@ require_once './functions.php';
 require_once './auth.php';
 require_once './data-api.php';
 
+//TODO POST request for lot.php (make bet)
+
 if ( !isset($_GET['id']) ) {
     http_response_code(404);
     $page_content = renderTemplate('./templates/error.php', ['error' => 'Ошибка 404. Страница не найдена']);
