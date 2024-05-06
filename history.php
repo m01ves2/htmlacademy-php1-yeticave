@@ -1,20 +1,28 @@
 <?php
 require_once './functions.php';
-require_once './data.php';
+// require_once './data.php';
 require_once './auth.php';
+require_once './data-api.php';
 
-$history_lots = [];
-
-if(isset($_COOKIE['history'])){
-    $h_ids = json_decode($_COOKIE['history']);
-    foreach( $h_ids as $h_id ){
-        if( isset($lots[$h_id]) ){
-            $history_lots[] = $lots[$h_id]; //добавляем в историю лотов лот из истории
-        }
-    }
+if(!isAuthorized()){
+    header('HTTP/1.0 403 Forbidden');
+    exit();
 }
 
+$history_lots = [];
+if (isset($_COOKIE['history'])) {
+    $h_ids = json_decode($_COOKIE['history']); //id просмотренных лотов
+    $history_lots = getLotsByIds($h_ids);
+}
 $page_content = renderTemplate('./templates/history.php', ['lots' => $history_lots]);
+
+
+$title = 'История просмотров';
+$categories = getCategories();
+
+if ($mysqli_error) {
+    $page_content = renderTemplate('./templates/error.php', ['error' => $mysqli_error]);
+}
 
 $layout_content = renderTemplate(
     './templates/layout.php',

@@ -1,6 +1,6 @@
 <?= renderTemplate('./templates/nav.php', []);?>
 <?php   $lotName  = isset( $lot['lot-name'] ) ? $lot['lot-name'] : '';
-        $category = isset( $lot['category'] ) ? $lot['category'] : '';
+        // $category = isset( $lot['category'] ) ? $lot['category'] : '';
         $message  = isset( $lot['message' ] ) ? $lot['message' ] : '';
         $lotRate  = isset( $lot['lot-rate'] ) ? $lot['lot-rate'] : '';
         $lotStep  = isset( $lot['lot-step'] ) ? $lot['lot-step'] : '';
@@ -29,14 +29,11 @@
         ?>
         <div class="form__item <?= $error_classname ?>">
             <label for="category">Категория</label>
-            <select id="category" name="category" required>
-                <option>Выберите категорию</option>
-                <option <?php if($category == 'Доски и лыжи'){ print('selected');} ?>>Доски и лыжи</option>
-                <option <?php if($category == 'Крепления'){ print('selected');} ?>>Крепления</option>
-                <option <?php if($category == 'Ботинки'){ print('selected');} ?>>Ботинки</option>
-                <option <?php if($category == 'Одежда'){ print('selected');} ?>>Одежда</option>
-                <option <?php if($category == 'Инструменты'){ print('selected');} ?>>Инструменты</option>
-                <option <?php if($category == 'Разное'){ print('selected');} ?>>Разное</option>
+            <select id="category" name="category_id" required>
+                <option value="-1">Выберите категорию</option>
+                <?php foreach($categories as $key => $value): ?>
+                    <option value="<?= $value['id'] ?>" ><?= $value['name'] ?></option>
+                <?php endforeach; ?>
             </select>
             <!-- <span class="form__error">Выберите категорию</span> -->
             <?php

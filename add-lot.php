@@ -1,18 +1,25 @@
 <?php
     require_once './functions.php';
-    require_once './data.php';
+    // require_once './mock-data.php';
     require_once './auth.php';
+    require_once './data-api.php';
 
     if(!isAuthorized()){
         header('HTTP/1.0 403 Forbidden');
         exit();
     }
 
+    $categories = getCategories();
+
+    if($mysqli_error){
+        $page_content = renderTemplate('./templates/error.php', [ 'error' => $mysqli_error] );
+    }
+
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $lot = $_POST;
 
-        $required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
+        $required_fields = ['lot-name', 'category_id', 'message', 'lot-rate', 'lot-step', 'lot-date'];
         $err_desc = [
             'lot-name' => 'Введите наименование лота',
             'category' => 'Выберите категорию',
@@ -29,7 +36,8 @@
             }
         }
 
-        if ($lot['category'] == 'Выберите категорию') {
+         //TODO Array[ [id => id1, name => name1], [id => id2, name => name2],... ]
+        if ($lot['category_id'] == -1) {
             $errors['category'] = $err_desc['category'];
         }
 
@@ -51,30 +59,33 @@
         }
 
         if (count($errors)) {
-            $page_content = renderTemplate('./templates/add-lot.php', ['lot' => $lot, 'errors' => $errors]);
+            $page_content = renderTemplate('./templates/add-lot.php', ['lot' => $lot, 'categories' => $categories, 'errors' => $errors]);
         }
         else {
             $newLot = [
-                "name" => $lot['lot-name'],
-                "category" => $lot['category'],
-                "price" => $lot['lot-rate'],
+                'name' => $lot['lot-name'],
+                'category_id' => $lot['category_id'],
+                'price' => $lot['lot-rate'],
                 'enddate' => $lot['lot-date'],
                 'step' =>  $lot['lot-step'],
                 'description' => $lot['message'],
             ];
             $newLot['img'] = isset($lot['img']) ?  $lot['img'] : '';
 
-            $lots[] = $newLot;
-
-            //$page_content = renderTemplate('./templates/lot.php', ['lot' => $newLot]);
-            $id = array_search($newLot, $lots);
-
-            $page_content = renderTemplate('./templates/lot.php', ['id' => $id, 'lot' => $lots[$id], 'bets' => $bets, 'is_auth' => $is_auth]);
+            $id = addLot($newLot);
+            if($mysqli_error){
+                $page_content = renderTemplate('./templates/error.php', [ 'error' => $mysqli_error] );
+            }
+            else{
+                header('Location: ./lot.php?id='.$id);
+            }
         }
     }
     else { //$_SERVER['REQUEST_METHOD'] == 'GET'
-        $page_content = renderTemplate('./templates/add-lot.php', []);
+        $page_content = renderTemplate('./templates/add-lot.php', ['categories' => $categories ]);
     }
+
+    $title = 'Добавить новый лот';
 
     $layout_content = renderTemplate('./templates/layout.php',
         [

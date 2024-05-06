@@ -1,6 +1,4 @@
 <?php
-    require_once './configdb.php';
-
     function renderTemplate($templateFile, $args){
         $content = '';
         if(!file_exists($templateFile)){

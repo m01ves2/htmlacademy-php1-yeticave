@@ -1,8 +1,8 @@
 <?php
 require_once './functions.php';
-require_once './data.php';
-require_once './userdata.php';
-require_once './configdb.php';
+// require_once './mock-data.php';
+// require_once './nock-userdata.php';s
+require_once './data-api.php';
 
 session_start();
 
@@ -30,61 +30,66 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    $user = searchUserByEmail($form['email'], $users);
-    if ($user) {
-        $errors['email_occupied'] = 'Пользователь с таким email уже существует.';
+    $users = getUsers();
+    if ($mysqli_error) {
+        $page_content = renderTemplate('./templates/error.php', ['error' => $mysqli_error]);
     }
+    else {
 
-    $password = $form['password'];
-
-    $min_password_length = 5;
-    if (strlen($password) <= $min_password_length) {
-        $errors['short_password'] = 'Слишком короткий пароль. Попробуйте выбрать другой( минимально ' . $min_password_length . ' символов)';
-    }
-    //TODO проверка пароля, соответствие шаблону
-
-    // загрузка аватара, сохранение в uploads
-    if (!empty($_FILES['avatar']['tmp_name'])) {
-
-        $tmp_name = $_FILES['avatar']['tmp_name'];
-        $path = 'uploads/'.$_FILES['avatar']['name'];
-
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $file_type = finfo_file($finfo, $tmp_name);
-
-        if ($file_type !== 'image/jpeg') {
-            $errors['file-upload'] = 'Загрузите аватар в формате jpeg';
-        } else {
-            move_uploaded_file($tmp_name, $path);
-            $form['avatar'] = $path;
+        $user = searchUserByEmail($form['email'], $users);
+        if ($user) {
+            $errors['email_occupied'] = 'Пользователь с таким email уже существует.';
         }
-    }
 
-    if (count($errors)) { //если есть какие то ошибки
-        print_r($errors);
-        $page_content = renderTemplate('./templates/sign-up.php', ['user' => $form, 'errors' => $errors]);
-    } else {
-        //TODO создаём пользователя
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $connection = mysqli_connect($mysql_host, $mysql_login, $mysql_password, $mysql_db);
+        $password = $form['password'];
 
-        if ($connection) {
-            $email = $form['email'];
-            $name = $form['name'];
-            // $avatar = $form['avatar'] ?? 'img/user.jpg';
-            $avatar = 'img/user.jpg';
-            // $contacts = $form['contacts'];
-            $sql = "INSERT Users(Email, Name, Password, Img, Date, Contacts)
-                        VALUES ('$email', '$name', '$passwordHash', '$avatar', NOW(), '$contacts');";
+        $min_password_length = 5;
+        if (strlen($password) <= $min_password_length) {
+            $errors['short_password'] = 'Слишком короткий пароль. Попробуйте выбрать другой( минимально ' . $min_password_length . ' символов)';
+        }
+        //TODO проверка пароля, соответствие шаблону
 
-            print_r($sql);
-            $result = mysqli_query($connection, $sql);
+        // загрузка аватара, сохранение в uploads
+        if (!empty($_FILES['avatar']['tmp_name'])) {
 
-            if (!$result) {
-                $page_content = renderTemplate('./templates/error.php', [$error['mysql'] => mysqli_error($connection)]);
-            } else { //success TODO!!!!!!!!!!!!!!!!!!!
+            $tmp_name = $_FILES['avatar']['tmp_name'];
+            $path = 'uploads/' . $_FILES['avatar']['name'];
+
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $file_type = finfo_file($finfo, $tmp_name);
+
+            if ($file_type !== 'image/jpeg') {
+                $errors['file-upload'] = 'Загрузите аватар в формате jpeg';
+            } else {
+                move_uploaded_file($tmp_name, $path);
+                $form['avatar'] = $path;
+            }
+        }
+
+        if (count($errors)) { //если есть какие то ошибки
+            $page_content = renderTemplate('./templates/sign-up.php', ['user' => $form, 'errors' => $errors]);
+        }
+        else {
+
+            //создаём пользователя
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+            $newUser = [
+                'email' => $form['email'],
+                'name' => $form['name'],
+                'password' => $passwordHash,
+                'avatar' => 'img/user.jpg', //TODO
+                'contacts' =>  $form['contacts']
+            ];
+
+            $id = addUser($newUser);
+
+            if ($mysqli_error) {
+                $page_content = renderTemplate('./templates/error.php', ['error' => mysqli_connect_error()]);
+            } else {
                 //авторизуемся
                 $_SESSION['user'] = $form;
+                $_SESSION['user']['id'] = $id;
 
                 $is_auth = true;
                 $user_name = $_SESSION['user']['name'];
@@ -92,11 +97,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $page_content = renderTemplate('./templates/welcome.php', ['username' => $user_name]); //TODO приветственная страница, с ссылкой на logout
             }
-        } else {
-            $page_content = renderTemplate('./templates/error.php', [$error['mysql'] => mysqli_connect_error()]);
         }
     }
-} else { //$_SERVER['REQUEST_METHOD'] == 'GET'
+}
+else { //$_SERVER['REQUEST_METHOD'] == 'GET'
     if (isAuthorized()) {
         header('Location: ./logout.php');
         exit();
@@ -104,6 +108,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $page_content = renderTemplate('./templates/sign-up.php', []);
     }
 }
+
+$categories = getCategories();
+if ($mysqli_error) {
+    $page_content = renderTemplate('./templates/error.php', ['error' => $mysqli_error]);
+}
+
+$title = 'Регистрация';
 
 $layout_content = renderTemplate(
     './templates/layout.php',
