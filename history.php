@@ -12,9 +12,18 @@ if(!isAuthorized()){
 $history_lots = [];
 if (isset($_COOKIE['history'])) {
     $h_ids = json_decode($_COOKIE['history']); //id просмотренных лотов
-    $history_lots = getLotsByIds($h_ids);
+
+    $currentPage = $_GET['page'] ?? 1;
+    $pageItems = 3;
+    $itemsCount = getLotsByIdsCount($h_ids);
+
+    $pagesCount = ceil($itemsCount / $pageItems);
+    $offset = ($currentPage - 1) * $pageItems;
+    $pages = range(1, $pagesCount); //page numbers 1,2,.., pagesCount
+
+    $history_lots = getLotsByIdsLimited($h_ids, $pageItems, $offset);
 }
-$page_content = renderTemplate('./templates/history.php', ['lots' => $history_lots]);
+$page_content = renderTemplate('./templates/history.php', ['lots' => $history_lots, 'pages' => $pages, 'current_page' => $currentPage]);
 
 
 $title = 'История просмотров';

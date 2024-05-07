@@ -103,7 +103,61 @@ function getLotsByIds($ids){
     }
 }
 
-function getBetsByLotId($lotId){ //TODO
+function getLotsByIdsLimited($ids, $limit, $offset){
+    global $connection, $mysqli_error;
+
+    if (!$connection) {
+        return;
+    }
+
+    try {
+        $sql = "SELECT  Lots.Id as id,
+                        Lots.Name as name,
+                        Categories.Name AS category,
+                        Lots.Price as price,
+                        Lots.Step as step,
+                        Lots.Img as img,
+                        Lots.Enddate as enddate,
+                        Lots.Description as description
+                FROM Lots
+                JOIN Categories
+                ON Lots.CategoryId = Categories.id
+                WHERE Lots.Id IN (" . implode(',', $ids) . ")
+                LIMIT $limit
+                OFFSET $offset";
+
+        $result = mysqli_query($connection, $sql);
+        $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+        return $lots;
+    } catch (Exception $e) {
+        $mysqli_error = mysqli_error($connection);
+    }
+}
+
+function getLotsByIdsCount($ids){
+    global $connection, $mysqli_error;
+
+    if (!$connection) {
+        return;
+    }
+
+    try {
+        $sql = "SELECT  count(Lots.Id) as cnt
+                FROM Lots
+                WHERE Lots.Id IN (" . implode(',', $ids) . ")";
+
+        $result = mysqli_query($connection, $sql);
+        $counter = mysqli_fetch_assoc($result)['cnt'];
+
+        return $counter;
+    } catch (Exception $e) {
+        $mysqli_error = mysqli_error($connection);
+    }
+}
+
+
+function getBetsByLotId($lotId){
     global $connection, $mysqli_error;
 
     if (!$connection) {
@@ -130,8 +184,6 @@ function getBetsByLotId($lotId){ //TODO
         $mysqli_error = mysqli_error($connection);
     }
 }
-
-
 
 function getCategories(){
     global $connection, $mysqli_error;
@@ -274,6 +326,72 @@ function getLotsByKeyWords($keywords){
         $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
         return $lots;
+    } catch (Exception $e) {
+        $mysqli_error = mysqli_error($connection);
+    }
+}
+
+function getLotsByKeyWordsLimited($keywords, $limit, $offset){
+    global $connection, $mysqli_error;
+
+    if (!$connection) {
+        return;
+    }
+
+    try {
+        $sql = "SELECT  Lots.Id as id,
+                        Lots.Name as name,
+                        Categories.Name AS category,
+                        Lots.Price as price,
+                        Lots.Step as step,
+                        Lots.Img as img,
+                        Lots.Enddate as enddate,
+                        Lots.Description as description
+                FROM Lots
+                JOIN Categories
+                ON Lots.CategoryId = Categories.id
+                WHERE MATCH(Lots.Name, Lots.Description) AGAINST(?)
+                ORDER BY Lots.Startdate DESC
+                LIMIT $limit
+                OFFSET $offset";
+
+        // $result = mysqli_query($connection, $sql);
+        // $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+        $stmt = db_get_prepare_stmt($connection, $sql, [$keywords]);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+        return $lots;
+    } catch (Exception $e) {
+        $mysqli_error = mysqli_error($connection);
+    }
+}
+
+function getLotsByKeyWordsCount($keywords){
+    global $connection, $mysqli_error;
+
+    if (!$connection) {
+        return;
+    }
+
+    try {
+        $sql = "SELECT  count(Lots.Id) as cnt
+                FROM Lots
+                WHERE MATCH(Lots.Name, Lots.Description) AGAINST(?)";
+
+        // $result = mysqli_query($connection, $sql);
+        // $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+        $stmt = db_get_prepare_stmt($connection, $sql, [$keywords]);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $lotsCount = mysqli_fetch_assoc($result)['cnt'];
+
+        return $lotsCount;
     } catch (Exception $e) {
         $mysqli_error = mysqli_error($connection);
     }
