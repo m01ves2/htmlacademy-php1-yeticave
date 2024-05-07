@@ -240,3 +240,34 @@ function addLot($newLot){
         $mysqli_error = mysqli_error($connection);
     }
 }
+
+function getLotsByKeyWords($keywords){
+    global $connection, $mysqli_error;
+
+    if (!$connection) {
+        return;
+    }
+
+    try {
+        $sql = "SELECT  Lots.Id as id,
+                        Lots.Name as name,
+                        Categories.Name AS category,
+                        Lots.Price as price,
+                        Lots.Step as step,
+                        Lots.Img as img,
+                        Lots.Enddate as enddate,
+                        Lots.Description as description
+                FROM Lots
+                JOIN Categories
+                ON Lots.CategoryId = Categories.id
+                WHERE MATCH(Lots.Name, Lots.Description) AGAINST('$keywords')
+                ORDER BY Lots.Startdate DESC";
+
+        $result = mysqli_query($connection, $sql);
+        $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+        return $lots;
+    } catch (Exception $e) {
+        $mysqli_error = mysqli_error($connection);
+    }
+}

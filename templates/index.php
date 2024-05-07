@@ -28,10 +28,10 @@
     </div>
 
     <ul class="lots__list">
-        <?php foreach ($lots as $key => $lot) { ?>
+        <?php foreach ($lots as $key => $lot): ?>
             <li class="lots__item lot">
                 <?= renderTemplate('./templates/lot-preview.php', ['lot' => $lot]); ?>
             </li>
-        <?php } ?>
+        <?php endforeach; ?>
     </ul>
 </section>

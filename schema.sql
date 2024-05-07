@@ -61,3 +61,9 @@ CREATE TABLE Bets(
 );
 CREATE INDEX index_Bets_Price ON Bets(Price);
 CREATE INDEX index_Bets_Date ON Bets(Date);
+
+CREATE FULLTEXT INDEX index_ft_Lots_search ON Lots(Name, Description);
+-- ALTER TABLE Lots ADD FULLTEXT INDEX index_ft_Lots_search(Name, Description);
+
+-- ALTER TABLE {your_table_name} DROP INDEX {your_index_name}
+-- DROP INDEX {your_index_name} ON {your_tbl_name}
