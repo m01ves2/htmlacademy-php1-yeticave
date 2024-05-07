@@ -1,5 +1,6 @@
 <?php
 require_once './configdb.php';
+require_once './mysql_helper.php';
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT ); //- Throw mysqli_sql_exception for errors instead of warnings
 
@@ -260,10 +261,16 @@ function getLotsByKeyWords($keywords){
                 FROM Lots
                 JOIN Categories
                 ON Lots.CategoryId = Categories.id
-                WHERE MATCH(Lots.Name, Lots.Description) AGAINST('$keywords')
+                WHERE MATCH(Lots.Name, Lots.Description) AGAINST(?)
                 ORDER BY Lots.Startdate DESC";
 
-        $result = mysqli_query($connection, $sql);
+        // $result = mysqli_query($connection, $sql);
+        // $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+        $stmt = db_get_prepare_stmt($connection, $sql, [$keywords]);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
         $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
         return $lots;
