@@ -32,10 +32,9 @@
                         <img src="<?= $user_avatar?>" width="40" height="40" alt="user">
                     </div>
                     <div class="user-menu__logged">
-                        <p><?=$user_name?></p>
+                        <a href="login.php"><?=htmlspecialchars($user_name); ?></a>
                     </div>
                 </li>
-                <li class="user-menu__item"><a href="logout.php">Выход</a></li>
             </ul>
         <?php else:?>
             <ul class="user-menu__list">
