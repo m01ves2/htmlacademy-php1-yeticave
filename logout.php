@@ -1,18 +1,18 @@
 <?php
-    // require_once './data.php';
-    require_once './functions.php';
+require_once './vendor/autoload.php'; //libraries loader
+// require_once './data.php';
+require_once './functions.php';
 
-    session_start();
+session_start();
 
-    if(isAuthorized()){ //по факту, если есть в cookie поле PHPSESSID - по нему восстанавливается сессия
-        $is_auth = false;
-        $user_name = '';
-        $user_avatar = '';
-        $user_email = '';
-        $user_password = '';
+if (isAuthorized()) { //по факту, если есть в cookie поле PHPSESSID - по нему восстанавливается сессия
+    $is_auth = false;
+    $user_name = '';
+    $user_avatar = '';
+    $user_email = '';
+    $user_password = '';
 
-        $_SESSION = [];
-    }
+    $_SESSION = [];
+}
 
-    header('Location: ./index.php');
-?>
+header('Location: ./index.php');

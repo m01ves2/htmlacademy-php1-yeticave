@@ -1,4 +1,5 @@
 <?php
+require_once './vendor/autoload.php'; //libraries loader
 require_once './functions.php';
 //require_once './mock-data.php';
 //require_once './mock-userdata.php';
@@ -29,30 +30,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
     $users = getUsers();
-    if( $mysqli_error ){
-        $page_content = renderTemplate('./templates/error.php', [ 'error' => $mysqli_error ]);
-    }
-    else{
-        $user = searchUserByEmail( $form['email'], $users );
+    if ($mysqli_error) {
+        $page_content = renderTemplate('./templates/error.php', ['error' => $mysqli_error]);
+    } else {
+        $user = searchUserByEmail($form['email'], $users);
         if (!count($errors) && $user) { //ошибок нет, пользователь найден => открываем сессию
 
             //проверка аутентификации
-            if ( password_verify($form['password'], $user['password']) ) { //если успешно авторизовались
+            if (password_verify($form['password'], $user['password'])) { //если успешно авторизовались
                 //открытие сессии
                 $_SESSION['user'] = $user; //в сессию пишем целиком пользователя
             } else {
                 //ошибка - неверный пароль
                 $errors['password'] = 'Неверный пароль';
             }
-        }
-        else {
+        } else {
             $errors['email'] = 'Такой пользователь не найден';
         }
 
         if (count($errors)) { //если есть какие то ошибки
             $page_content = renderTemplate('./templates/login.php', ['user' => $form, 'errors' => $errors]);
-        }
-        else {
+        } else {
             //ошибок нет, прошли валидацию и идентификацию
             $is_auth = true;
             $user_name = $_SESSION['user']['name'];
@@ -60,11 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $page_content = renderTemplate('./templates/welcome.php', ['username' => $user_name]); //TODO приветственная страница, с ссылкой на logout
         }
-
     }
-
-}
-else { //$_SERVER['REQUEST_METHOD'] == 'GET'
+} else { //$_SERVER['REQUEST_METHOD'] == 'GET'
     if (isAuthorized()) { //по факту, если есть в cookie поле PHPSESSID - по нему восстанавливается сессия
         $is_auth = true;
         $user_name = $_SESSION['user']['name'];
@@ -77,8 +72,8 @@ else { //$_SERVER['REQUEST_METHOD'] == 'GET'
 }
 
 $categories = getCategories();
-if($mysqli_error){
-    $page_content = renderTemplate('./templates/error.php', [ 'error' => $mysqli_error] );
+if ($mysqli_error) {
+    $page_content = renderTemplate('./templates/error.php', ['error' => $mysqli_error]);
 }
 
 $title = 'Личный кабинет';

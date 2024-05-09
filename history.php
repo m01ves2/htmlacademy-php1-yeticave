@@ -1,10 +1,11 @@
 <?php
+require_once './vendor/autoload.php'; //libraries loader
 require_once './functions.php';
 // require_once './data.php';
 require_once './auth.php';
 require_once './data-api.php';
 
-if(!isAuthorized()){
+if (!isAuthorized()) {
     header('HTTP/1.0 403 Forbidden');
     exit();
 }

@@ -1,0 +1,13 @@
+{
+    "name": "mol/yeticave",
+    "description": "home project for html-academy php lvl1 course",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Eugeny Vlasov",
+            "email": "eugenyvlasov@gmail.com"
+        }
+    ],
+    "require": {}
+}

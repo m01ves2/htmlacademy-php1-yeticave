@@ -1,4 +1,5 @@
 <?php
+require_once './vendor/autoload.php'; //libraries loader
 require_once './functions.php';
 // require_once './mock-data.php';
 // require_once './nock-userdata.php';s
@@ -33,8 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $users = getUsers();
     if ($mysqli_error) {
         $page_content = renderTemplate('./templates/error.php', ['error' => $mysqli_error]);
-    }
-    else {
+    } else {
 
         $user = searchUserByEmail($form['email'], $users);
         if ($user) {
@@ -68,8 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (count($errors)) { //если есть какие то ошибки
             $page_content = renderTemplate('./templates/sign-up.php', ['user' => $form, 'errors' => $errors]);
-        }
-        else {
+        } else {
 
             //создаём пользователя
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
@@ -99,8 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
     }
-}
-else { //$_SERVER['REQUEST_METHOD'] == 'GET'
+} else { //$_SERVER['REQUEST_METHOD'] == 'GET'
     if (isAuthorized()) {
         header('Location: ./logout.php');
         exit();
