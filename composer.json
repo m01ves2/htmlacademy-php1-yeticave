@@ -9,5 +9,8 @@
             "email": "eugenyvlasov@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "swiftmailer/swiftmailer": "^6.0",
+        "phpmailer/phpmailer": "^6.9"
+    }
 }

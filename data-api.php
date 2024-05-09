@@ -396,3 +396,22 @@ function getLotsByKeyWordsCount($keywords){
         $mysqli_error = mysqli_error($connection);
     }
 }
+
+function closeLot($lotId, $winnerId){
+    global $connection, $mysqli_error;
+
+    if (!$connection) {
+        return;
+    }
+
+    try {
+
+        $sql = "UPDATE Lots
+                SET WinnerId = $winnerId
+                WHERE Id = $lotId;";
+
+        return $result = mysqli_query($connection, $sql);
+    } catch (Exception $e) {
+        $mysqli_error = mysqli_error($connection);
+    }
+}

@@ -36,6 +36,7 @@
                             $class_invalid = isset($error['bet_price']) ? 'form__item--invalid' : '';
                         ?>
                         <p class="lot-item__form-item form__item <?=$class_invalid?>">
+                            <input type="hidden" name="id" value="<?=$lot['id']?>">
                             <label for="cost">Ваша ставка</label>
                             <input id="cost" type="text" name="cost" placeholder="<?= $lot['price'] + $lot['step'] ?>">
                             <?php if(isset($error['bet_price'])):?>
